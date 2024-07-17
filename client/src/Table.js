@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./Table.css";
 import { getPasswords } from "./api";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Table() {
   const [passwordsList, setPasswordsList] = useState([]);
@@ -33,25 +35,17 @@ function Table() {
     setPasswordsList(updatedPasswordsList);
   };
 
-  const handleCopyUsername = async (username) => {
+  const handleCopy = async (text, successMessage) => {
     try {
-      await navigator.clipboard.writeText(username);
-      alert("Username copied to clipboard!");
+      await navigator.clipboard.writeText(text);
+      toast.success(successMessage);
     } catch (error) {
-      console.error("Failed to copy username: ", error);
+      console.error(`Failed to copy ${text}: `, error);
+      toast.error(`Failed to copy ${text}!`);
     }
   };
 
-  const handleCopyPassword = async (password) => {
-    try {
-      await navigator.clipboard.writeText(password);
-      alert("Password copied to clipboard!");
-    } catch (error) {
-      console.error("Failed to copy password: ", error);
-    }
-  };
-
-  if (passwordsList.length === 0) return;
+  if (passwordsList.length === 0) return null;
 
   return (
     <div className="table-container">
@@ -60,28 +54,41 @@ function Table() {
       <div className="header">Password</div>
 
       {passwordsList.map((password, index) => (
-        <React.Fragment key={index}>
+        <div key={index} className="password-row">
           <div>{password.website}</div>
           <div
             className="username"
-            onClick={() => handleCopyUsername(password.username)}
+            onClick={() =>
+              handleCopy(password.username, "Username copied to clipboard!")
+            }
           >
             {password.username}
           </div>
           <div className="password">
             {password.showPassword ? (
-              <span onClick={() => handleCopyPassword(password.password)}>
+              <span
+                onClick={() =>
+                  handleCopy(password.password, "Password copied to clipboard!")
+                }
+              >
                 {password.password}
               </span>
             ) : (
-              <span>••••••••</span>
+              <span
+                onClick={() =>
+                  handleCopy(password.password, "Password copied to clipboard!")
+                }
+              >
+                ••••••••
+              </span>
             )}
             <button onClick={() => toggleShowPassword(index)}>
               {password.showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
             </button>
           </div>
-        </React.Fragment>
+        </div>
       ))}
+      <ToastContainer />
     </div>
   );
 }

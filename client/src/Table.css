@@ -1,48 +1,43 @@
+/* Table.css */
+
 .table-container {
   display: grid;
-  grid-template-columns: repeat(3, 200px);
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 1px;
   padding: 20px;
   border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  border-radius: 10px;
 }
 
-.table-container .header {
+.header {
   font-weight: bold;
   border-bottom: 1px solid #ccc;
   padding: 8px;
+  background-color: #0e1111;
+  color: #f9f9f9;
 }
 
-.table-container div {
+.password-row {
+  display: contents;
+}
+
+.password-row > div {
   padding: 8px;
   border-bottom: 1px solid #ccc;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.table-container div:last-child {
-  display: flex;
-  align-items: center;
-}
-
-.table-container span {
-  margin-right: 5px;
-}
-
-.table-container button {
-  background: none;
-  border: none;
+.username {
   cursor: pointer;
 }
 
 .password {
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .password > span {
@@ -50,4 +45,30 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.password > button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+  margin-left: 8px;
+}
+
+.password > button:hover {
+  color: #495057;
+}
+
+.password > button:focus {
+  outline: none;
+}
+
+.Toastify__toast--success {
+  background-color: #28a745;
+  color: #f9f9f9;
+}
+
+.Toastify__toast--error {
+  background-color: #dc3545;
+  color: #f9f9f9;
 }
