@@ -9,14 +9,68 @@ const { encrypt, decrypt } = require("./utils/encryption");
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  user: "root",
-  host: "localhost",
-  password: "sqlpassword",
-  database: "password_manager",
+// MySQL Connection Configuration
+let dbConfig = {
+  user: process.env.DB_USER || "root",
+  host: process.env.DB_HOST || "localhost",
+  password: process.env.DB_PASSWORD || "sqlpassword",
+  database: process.env.DB_DATABASE || "password_manager",
+};
+const db = mysql.createConnection(dbConfig);
+
+// Connect to MySQL
+db.connect((err) => {
+  if (err) {
+    console.error("Error connecting to database:", err);
+    return;
+  }
+  console.log("Connected to MySQL database");
+  createDatabaseIfNotExists();
 });
 
-// Routing
+// Create db if not existing
+function createDatabaseIfNotExists() {
+  db.query(`CREATE DATABASE IF NOT EXISTS ${dbConfig.database}`, (err) => {
+    if (err) {
+      console.error("Error creating database:", err);
+      return;
+    }
+    console.log(`Database ${dbConfig.database} ready.`);
+
+    // Use the created database
+    db.query(`USE ${dbConfig.database}`, (err) => {
+      if (err) {
+        console.error("Error using database:", err);
+        return;
+      }
+      console.log(`Using database ${dbConfig.database}`);
+      createTables();
+    });
+  });
+}
+// Function to create tables if they do not exist
+function createTables() {
+  const query = `
+    CREATE TABLE IF NOT EXISTS passwords (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      password VARCHAR(255) NOT NULL,
+      username VARCHAR(255) NOT NULL,
+      website VARCHAR(255) NOT NULL,
+      iv VARCHAR(255) NOT NULL,
+      \`key\` VARCHAR(255) NOT NULL
+    )
+  `;
+  db.query(query, (err) => {
+    if (err) {
+      console.error("Error creating table:", err);
+      return;
+    }
+    console.log("Table 'passwords' created or already exists");
+  });
+}
+
+/* Routing */
+// Add new password
 app.post("/addpassword", (req, res) => {
   const { password, username, website } = req.body;
   const encryption = encrypt(password);
@@ -36,6 +90,7 @@ app.post("/addpassword", (req, res) => {
   );
 });
 
+// Add all password
 app.get("/getpasswords", (req, res) => {
   const query = "SELECT * FROM passwords";
   db.query(query, (err, result) => {
@@ -48,6 +103,11 @@ app.get("/getpasswords", (req, res) => {
   });
 });
 
+// Edit a password
+
+// Delete a password
+
+// Decrypt password
 app.post("/decryptpassword", (req, res) => {
   try {
     const decryptedPassword = decrypt(req.body);
