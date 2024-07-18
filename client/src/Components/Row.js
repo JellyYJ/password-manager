@@ -1,6 +1,5 @@
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import "./Row.css";
-import { useState } from "react";
 
 export default function Row({
   password,
@@ -9,18 +8,19 @@ export default function Row({
   toggleShowPassword,
   handleUpdate,
   isEditing,
-  handleEdit,
+  onEdit,
+  edited,
+  setEdited,
+  handleDelete,
 }) {
-  const [editedPassword, setEditedPassword] = useState({ ...password });
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditedPassword({ ...editedPassword, [name]: value });
+    setEdited({ ...edited, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleUpdate(index, editedPassword);
+    handleUpdate(index, edited);
   };
 
   return (
@@ -30,7 +30,7 @@ export default function Row({
           <input
             type="text"
             name="website"
-            value={editedPassword.website}
+            value={edited.website}
             onChange={handleChange}
           />
         </form>
@@ -43,7 +43,7 @@ export default function Row({
           <input
             type="text"
             name="username"
-            value={editedPassword.username}
+            value={edited.username}
             onChange={handleChange}
           />
         </form>
@@ -64,7 +64,7 @@ export default function Row({
             <input
               type="text"
               name="password"
-              value={editedPassword.password}
+              value={edited.password}
               onChange={handleChange}
             />
             <button type="submit">Save</button>
@@ -91,7 +91,8 @@ export default function Row({
             <button onClick={() => toggleShowPassword(index)}>
               {password.showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
             </button>
-            <button onClick={() => handleEdit(index)}>Edit</button>
+            <button onClick={() => onEdit(index)}>Edit</button>
+            <button onClick={() => handleDelete(password.id)}>de</button>
           </>
         )}
       </div>

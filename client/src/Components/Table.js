@@ -3,7 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./Table.css";
-import { getPasswords, updatePassword } from "../api/api";
+import { deletePassword, getPasswords, updatePassword } from "../api/api";
 import Row from "./Row";
 
 function Table() {
@@ -11,7 +11,7 @@ function Table() {
 
   // State variables for editing
   const [editingIndex, setEditingIndex] = useState(-1);
-  const [editedCredential, setEditedCredential] = useState("");
+  const [edited, setEdited] = useState("");
 
   useEffect(() => {
     async function fetchPasswords() {
@@ -49,27 +49,43 @@ function Table() {
     }
   };
 
-  const handleUpdate = async (index, updatedFields) => {
+  const handleUpdate = async (index, passwordData) => {
     try {
-      const { id, ...updatedData } = updatedFields;
-      await updatePassword(id, updatedData);
-      const updatedPasswordsList = [...passwordsList];
-      updatedPasswordsList[index] = {
-        ...updatedPasswordsList[index],
-        ...updatedData,
-      };
-      setPasswordsList(updatedPasswordsList);
-      setEditingIndex(-1); // Reset editing state after update
-      toast.success("Password updated successfully!");
+      const { id, ...updatedData } = passwordData;
+      const response = await updatePassword(id, updatedData);
+      if (response.status === 200) {
+        const updatedPasswordsList = [...passwordsList];
+        updatedPasswordsList[index] = {
+          ...updatedPasswordsList[index],
+          ...updatedData,
+        };
+        setPasswordsList(updatedPasswordsList);
+        setEditingIndex(-1); // Reset editing state after update
+        toast.success("Password updated successfully!");
+      }
     } catch (error) {
       console.error("Failed to update password: ", error);
       toast.error("Failed to update password!");
     }
   };
 
-  const handleEdit = (index) => {
+  const onEdit = (index) => {
     setEditingIndex(index);
-    setEditedCredential(passwordsList[index]);
+    setEdited(passwordsList[index]);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deletePassword(id);
+      const updatedPasswordsList = passwordsList.filter(
+        (password) => password.id !== id
+      );
+      setPasswordsList(updatedPasswordsList);
+      toast.success("Password deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete password: ", error);
+      toast.error("Failed to delete password!");
+    }
   };
 
   if (passwordsList.length === 0) return null;
@@ -91,7 +107,10 @@ function Table() {
           toggleShowPassword={toggleShowPassword}
           handleUpdate={handleUpdate}
           isEditing={index === editingIndex}
-          handleEdit={handleEdit}
+          onEdit={onEdit}
+          handleDelete={handleDelete}
+          edited={edited}
+          setEdited={setEdited}
         />
       ))}
       <ToastContainer />

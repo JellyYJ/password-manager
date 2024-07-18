@@ -64,10 +64,20 @@ export async function updatePassword(id, password) {
   try {
     // const { password, username, website } = passwordData;
     const response = await axios.put(
-      `${server}/updatePassword/${id}`,
+      `${server}/updatepassword/${id}`,
       password
     );
     return response;
+  } catch (err) {
+    console.error("Error updating the password: ", err);
+    return null;
+  }
+}
+
+export async function deletePassword(id) {
+  try {
+    const response = await axios.delete(`${server}/deletepassword/${id}`);
+    console.log(response);
   } catch (err) {
     console.error("Error updating the password: ", err);
     return null;
