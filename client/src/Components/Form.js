@@ -2,11 +2,11 @@ import { useState } from "react";
 import "./Form.css";
 import { addPassword } from "../api/api";
 
-function Form() {
+function Form({ password, username, website }) {
   const [formData, setFormData] = useState({
-    password: "",
-    username: "",
-    website: "",
+    password: "" || password,
+    username: "" || username,
+    website: "" || website,
   });
 
   function handleChange(e) {

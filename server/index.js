@@ -104,8 +104,48 @@ app.get("/getpasswords", (req, res) => {
 });
 
 // Edit a password
+app.put("/updatePassword/:id", (req, res) => {
+  const passwordId = req.params.id;
+  const { password, username, website } = req.body;
+  const encryption = encrypt(password);
+  const query =
+    "UPDATE passwords SET password = ?, username = ?, website = ?, iv = ?, `key` = ? WHERE id = ?";
+  db.query(
+    query,
+    [
+      encryption.password,
+      username,
+      website,
+      encryption.iv,
+      encryption.key,
+      passwordId,
+    ],
+    (err) => {
+      if (err) {
+        console.error("Error updating password:", err);
+        res.status(500).send("Error updating password");
+      } else {
+        res.send("Password updated successfully");
+      }
+    }
+  );
+});
 
 // Delete a password
+app.delete("/deletepassword/:id", (req, res) => {
+  const passwordId = req.params.id;
+  const query = "DELETE FROM passwords WHERE id = ?";
+  db.query(query, [passwordId], (err, result) => {
+    if (err) {
+      console.error("Error deleting password:", err);
+      res.status(500).send("Error deleting password");
+    } else {
+      res.send("Password deleted successfully");
+    }
+  });
+});
+
+// Get a password by website
 
 // Decrypt password
 app.post("/decryptpassword", (req, res) => {

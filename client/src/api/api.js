@@ -17,13 +17,9 @@ export async function decryptPassword(pwd) {
 }
 
 export async function addPassword(formData) {
-  const { password, username, website } = formData;
+  // const { password, username, website } = formData;
   try {
-    const response = await axios.post(`${server}/addpassword`, {
-      password,
-      username,
-      website,
-    });
+    const response = await axios.post(`${server}/addpassword`, formData);
     return response;
   } catch (err) {
     console.error("Error adding new password:", err);
@@ -60,6 +56,20 @@ export async function getPasswords() {
     return decryptedPasswords;
   } catch (err) {
     console.error("Error retrieving passwords: ", err);
+    return null;
+  }
+}
+
+export async function updatePassword(id, password) {
+  try {
+    // const { password, username, website } = passwordData;
+    const response = await axios.put(
+      `${server}/updatePassword/${id}`,
+      password
+    );
+    return response;
+  } catch (err) {
+    console.error("Error updating the password: ", err);
     return null;
   }
 }
