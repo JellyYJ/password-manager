@@ -1,6 +1,6 @@
 import "./App.css";
-import Form from "./Form";
-import Table from "./Table";
+import Form from "./Components/Form";
+import Table from "./Components/Table";
 
 function App() {
   return (

@@ -1,0 +1,38 @@
+.row {
+  display: contents;
+}
+
+span {
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.username,
+.password {
+  cursor: pointer;
+}
+
+.password {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.password > span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.password > button {
+  padding: 11px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+  border-bottom: 1px solid #ccc;
+}
+
+.password > button:hover {
+  color: #495057;
+}

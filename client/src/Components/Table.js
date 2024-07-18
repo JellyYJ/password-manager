@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import "./Table.css";
-import { getPasswords } from "./api";
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import "./Table.css";
+import { getPasswords } from "../api/api";
+import Row from "./Row";
 
 function Table() {
   const [passwordsList, setPasswordsList] = useState([]);
@@ -49,44 +50,19 @@ function Table() {
 
   return (
     <div className="table-container">
-      <div className="header">Website</div>
-      <div className="header">Username</div>
-      <div className="header">Password</div>
+      <div className="header">
+        <span>Website</span>
+        <span>Username</span>
+        <span>Password</span>
+      </div>
 
       {passwordsList.map((password, index) => (
-        <div key={index} className="password-row">
-          <div>{password.website}</div>
-          <div
-            className="username"
-            onClick={() =>
-              handleCopy(password.username, "Username copied to clipboard!")
-            }
-          >
-            {password.username}
-          </div>
-          <div className="password">
-            {password.showPassword ? (
-              <span
-                onClick={() =>
-                  handleCopy(password.password, "Password copied to clipboard!")
-                }
-              >
-                {password.password}
-              </span>
-            ) : (
-              <span
-                onClick={() =>
-                  handleCopy(password.password, "Password copied to clipboard!")
-                }
-              >
-                ••••••••
-              </span>
-            )}
-            <button onClick={() => toggleShowPassword(index)}>
-              {password.showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
-            </button>
-          </div>
-        </div>
+        <Row
+          password={password}
+          handleCopy={handleCopy}
+          index={index}
+          toggleShowPassword={toggleShowPassword}
+        />
       ))}
       <ToastContainer />
     </div>

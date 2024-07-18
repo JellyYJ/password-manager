@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./Form.css";
-import { addPassword } from "./api";
+import { addPassword } from "../api/api";
 
 function Form() {
   const [formData, setFormData] = useState({

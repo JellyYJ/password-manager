@@ -1,5 +1,5 @@
 import axios from "axios";
-import { server } from "./config";
+import { server } from "../config";
 
 export async function decryptPassword(pwd) {
   const { password, iv, key } = pwd;

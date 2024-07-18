@@ -1,0 +1,25 @@
+.table-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  min-width: 400px;
+  max-width: 800px;
+}
+
+.header {
+  display: contents;
+  font-weight: bold;
+}
+
+.Toastify__toast--success {
+  background-color: #f9f9f9;
+  color: #0e1111;
+}
+
+.Toastify__toast--error {
+  background-color: #f9f9f9;
+  color: #881a25;
+}
