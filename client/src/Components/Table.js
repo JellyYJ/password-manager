@@ -9,33 +9,31 @@ import Row from "./Row";
 function Table() {
   const [passwordsList, setPasswordsList] = useState([]);
 
-  // State variables for editing
-  const [editingIndex, setEditingIndex] = useState(-1);
-  const [edited, setEdited] = useState("");
+  async function fetchPasswords() {
+    try {
+      const response = await getPasswords();
+      if (response) {
+        const passwordsWithData = response.map((password) => ({
+          ...password,
+          showPassword: false,
+        }));
+        setPasswordsList(passwordsWithData);
+      }
+    } catch (error) {
+      console.error("Error retrieving passwords: ", error);
+    }
+  }
 
   useEffect(() => {
-    async function fetchPasswords() {
-      try {
-        const response = await getPasswords();
-        if (response) {
-          const passwordsWithData = response.map((password) => ({
-            ...password,
-            showPassword: false,
-          }));
-          setPasswordsList(passwordsWithData);
-        }
-      } catch (error) {
-        console.error("Error retrieving passwords: ", error);
-      }
-    }
-
     fetchPasswords();
   }, []);
 
-  const toggleShowPassword = (index) => {
-    const updatedPasswordsList = [...passwordsList];
-    updatedPasswordsList[index].showPassword =
-      !updatedPasswordsList[index].showPassword;
+  const toggleShowPassword = (id) => {
+    const updatedPasswordsList = passwordsList.map((password) =>
+      password.id === id
+        ? { ...password, showPassword: !password.showPassword }
+        : password
+    );
     setPasswordsList(updatedPasswordsList);
   };
 
@@ -49,38 +47,22 @@ function Table() {
     }
   };
 
-  const handleUpdate = async (index, passwordData) => {
+  const handleUpdate = async (id, updatedPassword) => {
     try {
-      const { id, ...updatedData } = passwordData;
-      const response = await updatePassword(id, updatedData);
+      const response = await updatePassword(id, updatedPassword);
       if (response.status === 200) {
-        const updatedPasswordsList = [...passwordsList];
-        updatedPasswordsList[index] = {
-          ...updatedPasswordsList[index],
-          ...updatedData,
-        };
-        setPasswordsList(updatedPasswordsList);
-        setEditingIndex(-1); // Reset editing state after update
         toast.success("Password updated successfully!");
       }
-    } catch (error) {
-      console.error("Failed to update password: ", error);
-      toast.error("Failed to update password!");
+      fetchPasswords();
+    } catch (err) {
+      console.error("Error updating password:", err);
     }
-  };
-
-  const onEdit = (index) => {
-    setEditingIndex(index);
-    setEdited(passwordsList[index]);
   };
 
   const handleDelete = async (id) => {
     try {
       await deletePassword(id);
-      const updatedPasswordsList = passwordsList.filter(
-        (password) => password.id !== id
-      );
-      setPasswordsList(updatedPasswordsList);
+      fetchPasswords();
       toast.success("Password deleted successfully!");
     } catch (error) {
       console.error("Failed to delete password: ", error);
@@ -88,7 +70,7 @@ function Table() {
     }
   };
 
-  if (passwordsList.length === 0) return null;
+  if (!passwordsList || passwordsList.length === 0) return null;
 
   return (
     <div className="table-container">
@@ -98,19 +80,14 @@ function Table() {
         <span>Password</span>
       </div>
 
-      {passwordsList.map((password, index) => (
+      {passwordsList.map((password) => (
         <Row
           key={password.id}
           password={password}
           handleCopy={handleCopy}
-          index={index}
           toggleShowPassword={toggleShowPassword}
           handleUpdate={handleUpdate}
-          isEditing={index === editingIndex}
-          onEdit={onEdit}
           handleDelete={handleDelete}
-          edited={edited}
-          setEdited={setEdited}
         />
       ))}
       <ToastContainer />

@@ -1,36 +1,50 @@
+import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import "./Row.css";
 
 export default function Row({
   password,
-  index,
   handleCopy,
   toggleShowPassword,
   handleUpdate,
-  isEditing,
-  onEdit,
-  edited,
-  setEdited,
   handleDelete,
 }) {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEdited({ ...edited, [name]: value });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+    setEditData(password);
+    setEditingId(password.id);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleUpdate(index, edited);
+    handleUpdate(editingId, editData);
+    setIsEditing(false);
+    setEditingId(null);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+    setEditData(password);
+    setEditingId(null);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditData({ ...editData, [name]: value });
   };
 
   return (
     <div className="row">
       {isEditing ? (
-        <form onSubmit={handleSubmit}>
+        <form>
           <input
             type="text"
             name="website"
-            value={edited.website}
+            value={editData.website}
             onChange={handleChange}
           />
         </form>
@@ -39,11 +53,11 @@ export default function Row({
       )}
 
       {isEditing ? (
-        <form onSubmit={handleSubmit}>
+        <form>
           <input
             type="text"
             name="username"
-            value={edited.username}
+            value={editData.username}
             onChange={handleChange}
           />
         </form>
@@ -60,14 +74,17 @@ export default function Row({
 
       <div className="password">
         {isEditing ? (
-          <form onSubmit={handleSubmit}>
+          <form>
             <input
               type="text"
               name="password"
-              value={edited.password}
+              value={editData.password}
               onChange={handleChange}
             />
-            <button type="submit">Save</button>
+            <button type="submit" onClick={handleSubmit}>
+              Save
+            </button>
+            <button onClick={handleCancelClick}>Cancel</button>
           </form>
         ) : (
           <>
@@ -88,11 +105,11 @@ export default function Row({
                 ••••••••
               </span>
             )}
-            <button onClick={() => toggleShowPassword(index)}>
+            <button onClick={() => toggleShowPassword(password.id)}>
               {password.showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
             </button>
-            <button onClick={() => onEdit(index)}>Edit</button>
-            <button onClick={() => handleDelete(password.id)}>de</button>
+            <button onClick={handleEditClick}>Edit</button>
+            <button onClick={() => handleDelete(password.id)}>Delete</button>
           </>
         )}
       </div>
