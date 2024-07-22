@@ -40,27 +40,23 @@ export default function Row({
   return (
     <div className="row">
       {isEditing ? (
-        <form>
-          <input
-            type="text"
-            name="website"
-            value={editData.website}
-            onChange={handleChange}
-          />
-        </form>
+        <input
+          type="text"
+          name="website"
+          value={editData.website}
+          onChange={handleChange}
+        />
       ) : (
         <span>{password.website}</span>
       )}
 
       {isEditing ? (
-        <form>
-          <input
-            type="text"
-            name="username"
-            value={editData.username}
-            onChange={handleChange}
-          />
-        </form>
+        <input
+          type="text"
+          name="username"
+          value={editData.username}
+          onChange={handleChange}
+        />
       ) : (
         <span
           className="username"
@@ -72,47 +68,54 @@ export default function Row({
         </span>
       )}
 
-      <div className="password">
-        {isEditing ? (
-          <form>
-            <input
-              type="text"
-              name="password"
-              value={editData.password}
-              onChange={handleChange}
-            />
+      {/* <div className="password"> */}
+      {isEditing ? (
+        <>
+          <input
+            type="text"
+            name="password"
+            value={editData.password}
+            onChange={handleChange}
+          />
+          <div className="actions">
             <button type="submit" onClick={handleSubmit}>
               Save
             </button>
             <button onClick={handleCancelClick}>Cancel</button>
-          </form>
-        ) : (
-          <>
-            {password.showPassword ? (
-              <span
-                onClick={() =>
-                  handleCopy(password.password, "Password copied to clipboard!")
-                }
-              >
-                {password.password}
-              </span>
-            ) : (
-              <span
-                onClick={() =>
-                  handleCopy(password.password, "Password copied to clipboard!")
-                }
-              >
-                ••••••••
-              </span>
-            )}
+          </div>
+        </>
+      ) : (
+        <>
+          {password.showPassword ? (
+            <span
+              className="password"
+              onClick={() =>
+                handleCopy(password.password, "Password copied to clipboard!")
+              }
+            >
+              {password.password}
+            </span>
+          ) : (
+            <span
+              className="password"
+              onClick={() =>
+                handleCopy(password.password, "Password copied to clipboard!")
+              }
+            >
+              ••••••••
+            </span>
+          )}
+
+          <span>
             <button onClick={() => toggleShowPassword(password.id)}>
               {password.showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
             </button>
             <button onClick={handleEditClick}>Edit</button>
             <button onClick={() => handleDelete(password.id)}>Delete</button>
-          </>
-        )}
-      </div>
+          </span>
+        </>
+      )}
+      {/* </div> */}
     </div>
   );
 }

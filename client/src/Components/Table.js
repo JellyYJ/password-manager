@@ -78,6 +78,7 @@ function Table() {
         <span>Website</span>
         <span>Username</span>
         <span>Password</span>
+        <span>Actions</span>
       </div>
 
       {passwordsList.map((password) => (
