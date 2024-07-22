@@ -10,54 +10,66 @@ export default function Row({
   handleDelete,
 }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
 
   const handleEditClick = () => {
     setIsEditing(true);
     setEditData(password);
-    setEditingId(password.id);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleUpdate(editingId, editData);
+    handleUpdate(password.id, editData);
     setIsEditing(false);
-    setEditingId(null);
   };
 
   const handleCancelClick = () => {
     setIsEditing(false);
     setEditData(password);
-    setEditingId(null);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditData({ ...editData, [name]: value });
+    setEditData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  return (
-    <div className="row">
-      {isEditing ? (
-        <input
-          type="text"
-          name="website"
-          value={editData.website}
-          onChange={handleChange}
-        />
-      ) : (
-        <span>{password.website}</span>
-      )}
+  const renderEditForm = () => {
+    if (isEditing) {
+      return (
+        <>
+          <input
+            type="text"
+            name="website"
+            value={editData.website}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="username"
+            value={editData.username}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="password"
+            value={editData.password}
+            onChange={handleChange}
+          />
+          <div className="actions">
+            <button type="button" onClick={handleSubmit}>
+              Save
+            </button>
+            <button type="button" onClick={handleCancelClick}>
+              Cancel
+            </button>
+          </div>
+        </>
+      );
+    }
 
-      {isEditing ? (
-        <input
-          type="text"
-          name="username"
-          value={editData.username}
-          onChange={handleChange}
-        />
-      ) : (
+    return (
+      <>
+        <span>{password.website}</span>
         <span
           className="username"
           onClick={() =>
@@ -66,56 +78,28 @@ export default function Row({
         >
           {password.username}
         </span>
-      )}
-
-      {/* <div className="password"> */}
-      {isEditing ? (
-        <>
-          <input
-            type="text"
-            name="password"
-            value={editData.password}
-            onChange={handleChange}
-          />
-          <div className="actions">
-            <button type="submit" onClick={handleSubmit}>
-              Save
-            </button>
-            <button onClick={handleCancelClick}>Cancel</button>
-          </div>
-        </>
-      ) : (
-        <>
+        <span
+          className="password"
+          onClick={() =>
+            handleCopy(password.password, "Password copied to clipboard!")
+          }
+        >
           {password.showPassword ? (
-            <span
-              className="password"
-              onClick={() =>
-                handleCopy(password.password, "Password copied to clipboard!")
-              }
-            >
-              {password.password}
-            </span>
+            password.password
           ) : (
-            <span
-              className="password"
-              onClick={() =>
-                handleCopy(password.password, "Password copied to clipboard!")
-              }
-            >
-              ••••••••
-            </span>
+            <span className="password">••••••••</span>
           )}
+        </span>
+        <div className="actions">
+          <button onClick={() => toggleShowPassword(password.id)}>
+            {password.showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+          </button>
+          <button onClick={handleEditClick}>Edit</button>
+          <button onClick={() => handleDelete(password.id)}>Delete</button>
+        </div>
+      </>
+    );
+  };
 
-          <span>
-            <button onClick={() => toggleShowPassword(password.id)}>
-              {password.showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
-            </button>
-            <button onClick={handleEditClick}>Edit</button>
-            <button onClick={() => handleDelete(password.id)}>Delete</button>
-          </span>
-        </>
-      )}
-      {/* </div> */}
-    </div>
-  );
+  return <div className="row">{renderEditForm()}</div>;
 }

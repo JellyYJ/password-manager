@@ -1,26 +1,22 @@
 .table-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   background-color: #f9f9f9;
-  border-radius: 10px;
-  width: fit-content;
-  /* min-width: 450px;
-  max-width: 800px; */
 }
 
 .header {
-  display: contents;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   font-weight: bold;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ddd;
 }
 
-.Toastify__toast--success {
-  background-color: #f9f9f9;
-  color: #0e1111;
-}
-
-.Toastify__toast--error {
-  background-color: #f9f9f9;
-  color: #881a25;
+.header span {
+  padding: 0 10px;
 }
