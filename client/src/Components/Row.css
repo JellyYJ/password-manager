@@ -4,16 +4,15 @@
 
 .row span {
   padding: 8px 10px;
+  border-bottom: 1px solid #ddd;
 }
 
 .row input {
   padding: 8px 10px;
   border: 1px solid #ccc;
-}
-
-.row input {
-  width: 100%;
-  box-sizing: border-box;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .row .actions {
@@ -35,6 +34,9 @@
 .username,
 .password {
   cursor: pointer;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .row .actions button {
